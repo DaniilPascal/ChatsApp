@@ -9,8 +9,11 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.chatsapp.Activities.ChatActivity;
 import com.example.chatsapp.Activities.Models.User;
 import com.example.chatsapp.R;
+import com.example.chatsapp.databinding.RowConversationBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -74,7 +77,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
         holder.binding.username.setText(user.getName());
 
         Glide.with(context).load(user.getProfileImage())
-                .placeholder(R.drawable.avatar)
+                .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.binding.profile);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
