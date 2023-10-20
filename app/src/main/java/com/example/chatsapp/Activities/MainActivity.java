@@ -105,9 +105,9 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                 } else {
-                    getSupportActionBar()
-                            .setBackgroundDrawable
-                                    (new ColorDrawable(Color.parseColor(toolbarColor)));
+//                    getSupportActionBar()
+//                            .setBackgroundDrawable
+//                                    (new ColorDrawable(Color.parseColor(toolbarColor)));
                 }
 
             }
@@ -157,8 +157,8 @@ public class MainActivity extends AppCompatActivity {
         binding.statusList.setAdapter(usersAdapter);
         binding.recyclerView.setAdapter(usersAdapter);
 
-        binding.recyclerView.showShimmerAdapter();
-        binding.statusList.showShimmerAdapter();
+//        binding.recyclerView.showShimmerAdapter();
+//        binding.statusList.showShimmerAdapter();
 
         database.getReference().child("users").addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                     if (!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
                         users.add(user);
                 }
-                binding.recyclerView.hideShimmerAdapter();
+//                binding.recyclerView.hideShimmerAdapter();
                 usersAdapter.notifyDataSetChanged();
             }
 
@@ -202,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                         status.setStatuses(statuses);
                         userStatuses.add(status);
                     }
-                    binding.statusList.hideShimmerAdapter();
+//                    binding.statusList.hideShimmerAdapter();
                     statusAdapter.notifyDataSetChanged();
                 }
             }
