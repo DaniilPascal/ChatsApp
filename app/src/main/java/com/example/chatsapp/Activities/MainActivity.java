@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
         usersAdapter = new UsersAdapter(this, users);
         statusAdapter = new TopStatusAdapter(this, userStatuses);
 
-        binding.statusList.setAdapter(usersAdapter);
+        binding.statusList.setAdapter(statusAdapter);
         binding.recyclerView.setAdapter(usersAdapter);
 
 //        binding.recyclerView.showShimmerAdapter();
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                         userStatuses.add(status);
                     }
 //                    binding.statusList.hideShimmerAdapter();
-                    statusAdapter.notifyDataSetChanged();
+                    statusAdapter.setData(userStatuses);
                 }
             }
 

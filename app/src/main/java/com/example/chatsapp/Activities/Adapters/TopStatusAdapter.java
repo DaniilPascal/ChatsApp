@@ -1,5 +1,6 @@
 package com.example.chatsapp.Activities.Adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +25,17 @@ import omari.hamza.storyview.model.MyStory;
 public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopStatusViewHolder> {
 
     Context context;
-    ArrayList<UserStatus> userStatuses;
+    private ArrayList<UserStatus> userStatuses;
 
     public TopStatusAdapter(Context context, ArrayList<UserStatus> userStatuses) {
         this.context = context;
         this.userStatuses = userStatuses;
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setData(ArrayList<UserStatus> data) {
+        this.userStatuses = data;
+        notifyDataSetChanged();
     }
 
     @NonNull
