@@ -1,11 +1,5 @@
 package com.example.chatsapp.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -14,11 +8,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -51,6 +49,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -125,9 +124,8 @@ public class MainActivity extends AppCompatActivity {
                         map.put("token", token);
                         database.getReference()
                                 .child("users")
-                                .child(FirebaseAuth.getInstance().getUid())
+                                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
                                 .updateChildren(map);
-                        //Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
                     }
                 });
 
@@ -140,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         users = new ArrayList<>();
         userStatuses = new ArrayList<>();
 
-        database.getReference().child("users").child(FirebaseAuth.getInstance().getUid())
+        database.getReference().child("users").child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -153,13 +151,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-
         usersAdapter = new UsersAdapter(this, users);
         statusAdapter = new TopStatusAdapter(this, userStatuses);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setOrientation(RecyclerView.HORIZONTAL);
-        binding.statusList.setLayoutManager(layoutManager);
 
         binding.statusList.setAdapter(usersAdapter);
         binding.recyclerView.setAdapter(usersAdapter);
@@ -188,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         database.getReference().child("stories").addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {

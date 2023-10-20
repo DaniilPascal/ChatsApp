@@ -1,5 +1,6 @@
 package com.example.chatsapp.Activities.Models;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -30,6 +31,7 @@ public class MyFirebaseService extends FirebaseMessagingService {
 
     }
 
+    @SuppressLint("ObsoleteSdkInt")
     private void sendNotification(String title, String messageBody) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
