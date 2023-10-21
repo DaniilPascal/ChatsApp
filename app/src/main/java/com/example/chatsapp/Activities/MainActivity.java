@@ -3,10 +3,7 @@ package com.example.chatsapp.Activities;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,8 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
@@ -28,10 +23,6 @@ import com.example.chatsapp.Activities.Models.User;
 import com.example.chatsapp.Activities.Models.UserStatus;
 import com.example.chatsapp.R;
 import com.example.chatsapp.databinding.ActivityMainBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,7 +33,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -74,42 +64,32 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         mFirebaseRemoteConfig.setConfigSettingsAsync(configSettings);
 
-        mFirebaseRemoteConfig.fetchAndActivate().addOnSuccessListener(new OnSuccessListener<Boolean>() {
-            @Override
-            public void onSuccess(Boolean aBoolean) {
+        mFirebaseRemoteConfig.fetchAndActivate().addOnSuccessListener(aBoolean -> {
 
-                String backgroundImage = mFirebaseRemoteConfig.getString("backgroundImage");
+            String backgroundImage = mFirebaseRemoteConfig.getString("backgroundImage");
+            Glide.with(MainActivity.this)
+                    .load(backgroundImage)
+                    .into(binding.backgroundImage);
+
+            String toolbarColor = mFirebaseRemoteConfig.getString("toolbarColor");
+            String toolBarImage = mFirebaseRemoteConfig.getString("toolbarImage");
+            boolean isToolBarImageEnabled = mFirebaseRemoteConfig.getBoolean("toolBarImageEnabled");
+
+            if (isToolBarImageEnabled) {
                 Glide.with(MainActivity.this)
-                        .load(backgroundImage)
-                        .into(binding.backgroundImage);
+                        .load(toolBarImage)
+                        .into(new CustomTarget<Drawable>() {
+                            @Override
+                            public void onResourceReady(@NonNull @NotNull Drawable resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Drawable> transition) {
+                                getSupportActionBar().setBackgroundDrawable(resource);
+                            }
 
-                /* Toolbar Color */
-                String toolbarColor = mFirebaseRemoteConfig.getString("toolbarColor");
-                String toolBarImage = mFirebaseRemoteConfig.getString("toolbarImage");
-                boolean isToolBarImageEnabled = mFirebaseRemoteConfig.getBoolean("toolBarImageEnabled");
+                            @Override
+                            public void onLoadCleared(@Nullable @org.jetbrains.annotations.Nullable Drawable placeholder) {
 
-
-                if (isToolBarImageEnabled) {
-                    Glide.with(MainActivity.this)
-                            .load(toolBarImage)
-                            .into(new CustomTarget<Drawable>() {
-                                @Override
-                                public void onResourceReady(@NonNull @NotNull Drawable resource, @Nullable @org.jetbrains.annotations.Nullable Transition<? super Drawable> transition) {
-                                    getSupportActionBar()
-                                            .setBackgroundDrawable(resource);
-                                }
-
-                                @Override
-                                public void onLoadCleared(@Nullable @org.jetbrains.annotations.Nullable Drawable placeholder) {
-
-                                }
-                            });
-                } else {
-//                    getSupportActionBar()
-//                            .setBackgroundDrawable
-//                                    (new ColorDrawable(Color.parseColor(toolbarColor)));
-                }
-
+                            }
+                        });
+            } else {
             }
         });
 
@@ -117,23 +97,18 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseMessaging.getInstance()
                 .getToken()
-                .addOnSuccessListener(new OnSuccessListener<String>() {
-                    @Override
-                    public void onSuccess(String token) {
-                        HashMap<String, Object> map = new HashMap<>();
-                        map.put("token", token);
-                        database.getReference()
-                                .child("users")
-                                .child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
-                                .updateChildren(map);
-                    }
+                .addOnSuccessListener(token -> {
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("token", token);
+                    database.getReference()
+                            .child("users")
+                            .child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
+                            .updateChildren(map);
                 });
-
 
         dialog = new ProgressDialog(this);
         dialog.setMessage("Uploading Image...");
         dialog.setCancelable(false);
-
 
         users = new ArrayList<>();
         userStatuses = new ArrayList<>();
@@ -157,9 +132,6 @@ public class MainActivity extends AppCompatActivity {
         binding.statusList.setAdapter(statusAdapter);
         binding.recyclerView.setAdapter(usersAdapter);
 
-//        binding.recyclerView.showShimmerAdapter();
-//        binding.statusList.showShimmerAdapter();
-
         database.getReference().child("users").addValueEventListener(new ValueEventListener() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
@@ -170,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
                     if (!user.getUid().equals(FirebaseAuth.getInstance().getUid()))
                         users.add(user);
                 }
-//                binding.recyclerView.hideShimmerAdapter();
                 usersAdapter.notifyDataSetChanged();
             }
 
@@ -198,11 +169,9 @@ public class MainActivity extends AppCompatActivity {
                             Status sampleStatus = statusSnapshot.getValue(Status.class);
                             statuses.add(sampleStatus);
                         }
-
                         status.setStatuses(statuses);
                         userStatuses.add(status);
                     }
-//                    binding.statusList.hideShimmerAdapter();
                     statusAdapter.setData(userStatuses);
                 }
             }
@@ -214,18 +183,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        binding.bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @SuppressLint("NonConstantResourceId")
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.status) {
-                    Intent intent = new Intent();
-                    intent.setType("image/*");
-                    intent.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(intent, 75);
-                }
-                return false;
+        binding.bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if (item.getItemId() == R.id.status) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, 75);
             }
+            return false;
         });
     }
 
@@ -240,41 +205,35 @@ public class MainActivity extends AppCompatActivity {
                 Date date = new Date();
                 StorageReference reference = storage.getReference().child("status").child(date.getTime() + "");
 
-                reference.putFile(data.getData()).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if(task.isSuccessful()) {
-                            reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    UserStatus userStatus = new UserStatus();
-                                    userStatus.setName(user.getName());
-                                    userStatus.setProfileImage(user.getProfileImage());
-                                    userStatus.setLastUpdated(date.getTime());
+                reference.putFile(data.getData()).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        reference.getDownloadUrl().addOnSuccessListener(uri -> {
+                            UserStatus userStatus = new UserStatus();
+                            userStatus.setName(user.getName());
+                            userStatus.setProfileImage(user.getProfileImage());
+                            userStatus.setLastUpdated(date.getTime());
 
-                                    HashMap<String, Object> obj = new HashMap<>();
-                                    obj.put("name", userStatus.getName());
-                                    obj.put("profileImage", userStatus.getProfileImage());
-                                    obj.put("lastUpdated", userStatus.getLastUpdated());
+                            HashMap<String, Object> obj = new HashMap<>();
+                            obj.put("name", userStatus.getName());
+                            obj.put("profileImage", userStatus.getProfileImage());
+                            obj.put("lastUpdated", userStatus.getLastUpdated());
 
-                                    String imageUrl = uri.toString();
-                                    Status status = new Status(imageUrl, userStatus.getLastUpdated());
+                            String imageUrl = uri.toString();
+                            Status status = new Status(imageUrl, userStatus.getLastUpdated());
 
-                                    database.getReference()
-                                            .child("stories")
-                                            .child(FirebaseAuth.getInstance().getUid())
-                                            .updateChildren(obj);
+                            database.getReference()
+                                    .child("stories")
+                                    .child(Objects.requireNonNull(FirebaseAuth.getInstance().getUid()))
+                                    .updateChildren(obj);
 
-                                    database.getReference().child("stories")
-                                            .child(FirebaseAuth.getInstance().getUid())
-                                            .child("statuses")
-                                            .push()
-                                            .setValue(status);
+                            database.getReference().child("stories")
+                                    .child(FirebaseAuth.getInstance().getUid())
+                                    .child("statuses")
+                                    .push()
+                                    .setValue(status);
 
-                                    dialog.dismiss();
-                                }
-                            });
-                        }
+                            dialog.dismiss();
+                        });
                     }
                 });
             }

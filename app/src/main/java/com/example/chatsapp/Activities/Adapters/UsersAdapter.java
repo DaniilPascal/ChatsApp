@@ -80,16 +80,13 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.binding.profile);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("name", user.getName());
-                intent.putExtra("image", user.getProfileImage());
-                intent.putExtra("uid", user.getUid());
-                intent.putExtra("token", user.getToken());
-                context.startActivity(intent);
-            }
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ChatActivity.class);
+            intent.putExtra("name", user.getName());
+            intent.putExtra("image", user.getProfileImage());
+            intent.putExtra("uid", user.getUid());
+            intent.putExtra("token", user.getToken());
+            context.startActivity(intent);
         });
     }
 
@@ -98,7 +95,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
         return users.size();
     }
 
-    public class UsersViewHolder extends RecyclerView.ViewHolder {
+    public static class UsersViewHolder extends RecyclerView.ViewHolder {
 
         RowConversationBinding binding;
 

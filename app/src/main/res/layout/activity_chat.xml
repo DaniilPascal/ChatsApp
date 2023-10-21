@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/assembler"
     tools:context=".Activities.ChatActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="#EB151414"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,14 +29,17 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
-                app:srcCompat="@drawable/ic_left_arrow" />
+                android:tint="@color/white"
+                app:srcCompat="@drawable/ic_left_arrow"
+                tools:ignore="UseAppTint" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/profile"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
                 android:layout_marginLeft="10dp"
-                android:src="@drawable/ic_launcher_background" />
+                android:tint="@color/white"
+                android:src="@drawable/ic_status" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -48,7 +52,6 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Mian Asad Ali"
                     android:textColor="@color/white"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -80,19 +83,22 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
+            android:background="#1D1C1C"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="horizontal">
 
             <EditText
+                android:textColor="@color/white"
                 android:id="@+id/messageBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:background="@android:color/transparent"
-                android:hint="Type a message..."
+                android:hint="Message:"
+                android:textColorHint="@color/white"
                 android:inputType="textPersonName"
                 android:padding="8dp"
                 android:textSize="14sp" />
@@ -103,7 +109,7 @@
                 android:layout_height="16dp"
                 android:layout_marginRight="12dp"
                 app:srcCompat="@drawable/ic_attachment"
-                app:tint="#676767" />
+                app:tint="@color/white" />
 
             <ImageView
                 android:id="@+id/camera"
@@ -111,7 +117,7 @@
                 android:layout_height="16dp"
                 android:layout_marginRight="12dp"
                 app:srcCompat="@drawable/ic_camera"
-                app:tint="#676767" />
+                app:tint="@color/white" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
